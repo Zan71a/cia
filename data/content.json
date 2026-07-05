@@ -1,0 +1,126 @@
+{
+  "site": {
+    "title": "BHINEKA.SPACE - Harmoni Teknologi VR, Agama & Budaya Nusantara",
+    "brand_main": "BHINEKA",
+    "brand_accent": "SPACE",
+    "tagline": "Immersive Heritage Ecosystem",
+    "favicon": "bhineka.png",
+    "footer": "© 2026 Tim Bhineka Space. Seluruh Hak Cipta Dilindungi. Pelestarian Warisan melalui Realitas Imersif."
+  },
+  "hero": {
+    "badge": "Inovasi Metaverse Budaya & Spiritual Indonesia",
+    "title_top": "Menembus Batas Realita",
+    "title_main": "Bhineka Space",
+    "description": "Menghubungkan luhurnya nilai-nilai Keagamaan, indahnya khazanah Budaya Nusantara, dengan teknologi Virtual Reality (VR). Merawat warisan sejarah leluhur dalam lanskap digital masa depan.",
+    "primary_text": "Pelajari Korelasi",
+    "primary_link": "#korelasi",
+    "secondary_text": "Eksplorasi VR",
+    "secondary_link": "#portal"
+  },
+  "korelasi": {
+    "title": "Korelasi Virtual Reality, Agama, & Budaya",
+    "items": [
+      {
+        "number": "01",
+        "icon": "fa-solid fa-om",
+        "color": "orange",
+        "title": "Imersi Spiritual & Transendensi Keagamaan",
+        "description": "Teknologi VR mampu merekonstruksi rumah ibadah, seperti Pura, Candi, Masjid, hingga kompleks religi dengan keakuratan tinggi. Hal ini dapat menjaga esensi kebersamaan dan kerukunan beragama (Bhinneka Tunggal Ika) secara interaktif."
+      },
+      {
+        "number": "02",
+        "icon": "fa-solid fa-masks-theater",
+        "color": "blue",
+        "title": "Preservasi Keabadian Warisan Budaya",
+        "description": "Budaya Nusantara kaya akan ekspresi tak berwujud seperti alat musik tradisional, pertunjukan wayang kulit, dan ritus tradisi. Lewat VR, artefak sejarah dan kebudayaan tidak sekadar disimpan pasif di dalam etalase museum, melainkan dihidupkan kembali sebagai medium edukasi 3 dimensi yang dinamis, menarik minat generasi Z, dan mengabadikannya secara permanen di dunia digital."
+      }
+    ]
+  },
+  "portal": {
+    "eyebrow": "Gerbang Metaverse",
+    "title": "Eksplorasi Portal Virtual Reality",
+    "subtitle": "Nikmati petualangan imersif melintasi sejarah religi dan toleransi Nusantara.",
+    "items": [
+      {
+        "title": "VR Candi Borobudur",
+        "category": "Budaya Nusantara",
+        "image": "borobudur.png",
+        "fallback": "https://placehold.co/800x600/000/fff?text=Candi+Borobudur",
+        "description": "Menyajikan visualisasi megah Candi Buddha terbesar di dunia langsung ke hadapan Anda. Nikmati tur virtual yang mengulas mendalam relief Karmawibhangga, stupa utama, hingga atmosfer keheningan fajar di puncak candi yang dikemas secara detail 360 derajat.",
+        "button_text": "Buka Portal VR Borobudur",
+        "button_link": "https://darrellhaidar.github.io/borobudur/",
+        "color": "orange"
+      },
+      {
+        "title": "VR Puja Mandala Worship Complex",
+        "category": "Harmoni 5 Agama",
+        "image": "pujamandala.png",
+        "fallback": "https://placehold.co/800x600/000/fff?text=Puja+Mandala",
+        "description": "Menelusuri simbol toleransi beragama sejati di Kompleks Puja Mandala Bali secara 3D interaktif. Eksplorasi lima rumah ibadah, yaitu Masjid, Gereja Katolik, Gereja Protestan, Vihara, dan Pura.",
+        "button_text": "Buka Portal VR Puja Mandala",
+        "button_link": "https://darrellhaidar.github.io/pujamandala/",
+        "color": "blue"
+      }
+    ]
+  },
+  "berita": {
+    "eyebrow": "Kabar Digital",
+    "title": "Cerita Terbaru Bhineka Space",
+    "subtitle": "Ruang update kegiatan, riset, dan dokumentasi pengembangan ekosistem VR budaya.",
+    "items": [
+      {
+        "date": "02 Juli 2026",
+        "title": "Eksplorasi VR Budaya Nusantara",
+        "description": "Tim mengembangkan pengalaman virtual untuk memperkenalkan warisan budaya dan toleransi beragama melalui visual interaktif.",
+        "link": "#portal"
+      },
+      {
+        "date": "18 Juni 2026",
+        "title": "Integrasi Storytelling Digital",
+        "description": "Halaman publik ditingkatkan dengan animasi scroll storytelling agar pengunjung lebih mudah mengikuti alur informasi.",
+        "link": "#korelasi"
+      },
+      {
+        "date": "05 Juni 2026",
+        "title": "Dokumentasi Tim Bhineka Space",
+        "description": "Profil anggota dan tautan sosial media disusun sebagai identitas tim pengembang platform.",
+        "link": "#tim"
+      }
+    ]
+  },
+  "tim": {
+    "title": "Anggota Kami",
+    "items": [
+      {
+        "name": "Amin Abdurrahman",
+        "role": "Mentor",
+        "image": "amin.jpeg",
+        "instagram": "https://www.instagram.com/amin.abdrhn/"
+      },
+      {
+        "name": "Jihan Aulia Zahrani",
+        "role": "Anggota",
+        "image": "jihan.jpeg",
+        "instagram": "https://www.instagram.com/jihannlia/"
+      },
+      {
+        "name": "Muhammad Zaki Ramadhani",
+        "role": "Anggota",
+        "image": "muhammad.jpeg",
+        "instagram": "https://www.instagram.com/muhammadzakiiramadhani/"
+      },
+      {
+        "name": "Chandika Windyra B.",
+        "role": "Anggota",
+        "image": "chan.jpeg",
+        "instagram": "https://www.instagram.com/chandikawb/"
+      },
+      {
+        "name": "Darrell Haidar Ahmad",
+        "role": "Anggota",
+        "image": "darrell1.jpeg",
+        "instagram": "https://www.instagram.com/darrellhaidarnew/"
+      }
+    ]
+  }
+}
