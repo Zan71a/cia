@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - BHINEKA.SPACE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        navy: { 800: '#102A43', 900: '#0B1D33', 950: '#050D1A' },
+                        accent: { orange: '#FF5E13', sunset: '#FF8C32' }
+                    },
+                    boxShadow: { 'neon-orange': '0 0 20px rgba(255, 94, 19, 0.3)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: Inter, sans-serif; }
+        .glass { background: rgba(11, 29, 51, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+        .field { width: 100%; border-radius: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 14px; outline: none; transition: .2s; }
+        .field:focus { border-color: rgba(255,94,19,.75); box-shadow: 0 0 0 4px rgba(255,94,19,.12); }
+        .label { display:block; margin-bottom: 7px; color: #cbd5e1; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+        textarea.field { min-height: 96px; resize: vertical; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050D1A; }
+        ::-webkit-scrollbar-thumb { background: #FF5E13; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-navy-950 text-gray-200 min-h-screen">
+    <div class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,rgba(255,94,19,0.18),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(56,189,248,0.12),transparent_45%)]"></div>
+
+    <section id="login-screen" class="min-h-screen flex items-center justify-center p-5">
+        <div class="glass rounded-3xl max-w-md w-full p-8 shadow-2xl">
+            <div class="mb-7 text-center">
+                <div class="w-14 h-14 rounded-2xl bg-accent-orange/10 text-accent-orange border border-accent-orange/30 flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-user-shield text-2xl"></i></div>
+                <h1 class="text-2xl font-extrabold text-white">Admin BHINEKA.SPACE</h1>
+                <p class="text-sm text-gray-400 mt-2">Login untuk mengubah konten website HTML.</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="label">Username</label>
+                    <input id="login-username" class="field" autocomplete="username" placeholder="admin" required>
+                </div>
+                <div>
+                    <label class="label">Password</label>
+                    <input id="login-password" class="field" type="password" autocomplete="current-password" placeholder="admin123" required>
+                </div>
+                <p id="login-error" class="hidden text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-xl p-3">Username atau password salah.</p>
+                <button class="w-full rounded-2xl bg-gradient-to-r from-accent-orange to-accent-sunset text-white font-bold py-3 hover:shadow-neon-orange transition-all" type="submit">Masuk Admin</button>
+            </form>
+            <div class="mt-6 text-xs text-gray-500 bg-white/5 rounded-2xl p-4 leading-relaxed">
+                Default login: <b class="text-gray-300">admin</b> / <b class="text-gray-300">admin123</b>. Karena ini HTML murni, login ini hanya untuk tampilan lokal, bukan keamanan server.
+            </div>
+        </div>
+    </section>
+
+    <main id="admin-app" class="hidden">
+        <header class="sticky top-0 z-40 glass border-x-0 border-t-0">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-white">Admin Panel HTML</h1>
+                    <p class="text-xs text-gray-400">Edit konten lalu klik Simpan. Halaman depan membaca data dari localStorage.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="index.html" target="_blank" class="hidden sm:inline-flex px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-semibold text-gray-200 hover:bg-white/10"><i class="fa-solid fa-eye mr-2"></i>Preview</a>
+                    <button id="logout-btn" class="px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-sm font-semibold text-red-200 hover:bg-red-500/20"><i class="fa-solid fa-right-from-bracket mr-2"></i>Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
+            <aside class="glass rounded-3xl p-4 h-max lg:sticky lg:top-28">
+                <nav class="space-y-2 text-sm font-semibold">
+                    <a href="#site" class="block rounded-xl px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-globe mr-2 text-accent-orange"></i>Website</a>
+                    <a href="#hero" class="block rounded-xl px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-star mr-2 text-accent-orange"></i>Hero</a>
+                    <a href="#korelasi" class="block rounded-xl px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-link mr-2 text-accent-orange"></i>Korelasi</a>
+                    <a href="#portal" class="block rounded-xl px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-vr-cardboard mr-2 text-accent-orange"></i>Portal VR</a>
+                    <a href="#berita" class="block rounded-xl px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-newspaper mr-2 text-accent-orange"></i>Berita</a>
+                    <a href="#team" class="block rounded-xl px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-users mr-2 text-accent-orange"></i>Tim</a>
+                    <a href="#tools" class="block rounded-xl px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white"><i class="fa-solid fa-toolbox mr-2 text-accent-orange"></i>Tools</a>
+                </nav>
+            </aside>
+
+            <form id="content-form" class="space-y-6">
+                <section id="site" class="glass rounded-3xl p-5 sm:p-7">
+                    <div class="flex items-start justify-between gap-4 mb-5">
+                        <div><h2 class="text-xl font-extrabold text-white">Pengaturan Website</h2><p class="text-sm text-gray-400 mt-1">Judul browser, logo teks, tagline, dan footer.</p></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="label">Title Browser</label><input data-path="site.title" class="field"></div>
+                        <div><label class="label">Tagline Logo</label><input data-path="site.tagline" class="field"></div>
+                        <div class="md:col-span-2"><label class="label">Logo / Brand HTML</label><input data-path="site.brandHtml" class="field"></div>
+                        <div class="md:col-span-2"><label class="label">Footer Text</label><textarea data-path="site.footer" class="field"></textarea></div>
+                    </div>
+                </section>
+
+                <section id="hero" class="glass rounded-3xl p-5 sm:p-7">
+                    <h2 class="text-xl font-extrabold text-white mb-5">Hero / Beranda</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="label">Badge</label><input data-path="hero.badge" class="field"></div>
+                        <div><label class="label">Judul Kecil</label><input data-path="hero.titleTop" class="field"></div>
+                        <div><label class="label">Judul Utama</label><input data-path="hero.titleMain" class="field"></div>
+                        <div><label class="label">Tombol Kedua</label><input data-path="hero.secondaryText" class="field"></div>
+                        <div><label class="label">Tombol Pertama</label><input data-path="hero.primaryText" class="field"></div>
+                        <div class="md:col-span-2"><label class="label">Deskripsi Hero (boleh HTML)</label><textarea data-path="hero.description" class="field"></textarea></div>
+                    </div>
+                </section>
+
+                <section id="korelasi" class="glass rounded-3xl p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                        <div><h2 class="text-xl font-extrabold text-white">Korelasi</h2><p class="text-sm text-gray-400 mt-1">Edit card filosofi dan teknologi.</p></div>
+                    </div>
+                    <div class="mb-4"><label class="label">Judul Section</label><input data-path="korelasi.title" class="field"></div>
+                    <div id="korelasi-editor" class="space-y-4"></div>
+                </section>
+
+                <section id="portal" class="glass rounded-3xl p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                        <div><h2 class="text-xl font-extrabold text-white">Portal VR</h2><p class="text-sm text-gray-400 mt-1">Edit gambar, link, tag, deskripsi portal.</p></div>
+                        <button type="button" id="add-portal" class="rounded-xl bg-accent-orange text-white px-4 py-2 text-sm font-bold hover:shadow-neon-orange"><i class="fa-solid fa-plus mr-2"></i>Tambah Portal</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                        <div><label class="label">Eyebrow</label><input data-path="portalHeader.eyebrow" class="field"></div>
+                        <div><label class="label">Judul</label><input data-path="portalHeader.title" class="field"></div>
+                        <div><label class="label">Subtitle</label><input data-path="portalHeader.subtitle" class="field"></div>
+                    </div>
+                    <div id="portal-editor" class="space-y-4"></div>
+                </section>
+
+                <section id="berita" class="glass rounded-3xl p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                        <div><h2 class="text-xl font-extrabold text-white">Kabar Digital / Berita</h2><p class="text-sm text-gray-400 mt-1">Tambah update kegiatan atau informasi.</p></div>
+                        <button type="button" id="add-berita" class="rounded-xl bg-accent-orange text-white px-4 py-2 text-sm font-bold hover:shadow-neon-orange"><i class="fa-solid fa-plus mr-2"></i>Tambah Berita</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                        <div><label class="label">Eyebrow</label><input data-path="beritaHeader.eyebrow" class="field"></div>
+                        <div><label class="label">Judul</label><input data-path="beritaHeader.title" class="field"></div>
+                        <div><label class="label">Subtitle</label><input data-path="beritaHeader.subtitle" class="field"></div>
+                    </div>
+                    <div id="berita-editor" class="space-y-4"></div>
+                </section>
+
+                <section id="team" class="glass rounded-3xl p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                        <div><h2 class="text-xl font-extrabold text-white">Tim Kami</h2><p class="text-sm text-gray-400 mt-1">Edit anggota, foto, dan Instagram.</p></div>
+                        <button type="button" id="add-member" class="rounded-xl bg-accent-orange text-white px-4 py-2 text-sm font-bold hover:shadow-neon-orange"><i class="fa-solid fa-plus mr-2"></i>Tambah Anggota</button>
+                    </div>
+                    <div class="mb-4"><label class="label">Judul Section Tim</label><input data-path="team.title" class="field"></div>
+                    <div id="team-editor" class="space-y-4"></div>
+                </section>
+
+                <section id="tools" class="glass rounded-3xl p-5 sm:p-7">
+                    <h2 class="text-xl font-extrabold text-white mb-5">Tools</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+                        <button type="submit" class="rounded-2xl bg-gradient-to-r from-accent-orange to-accent-sunset text-white font-extrabold py-3 hover:shadow-neon-orange"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Semua</button>
+                        <a href="index.html" target="_blank" class="rounded-2xl bg-white/5 border border-white/10 text-white font-extrabold py-3 text-center hover:bg-white/10"><i class="fa-solid fa-eye mr-2"></i>Preview Website</a>
+                        <button type="button" id="export-json" class="rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-200 font-extrabold py-3 hover:bg-sky-500/20"><i class="fa-solid fa-download mr-2"></i>Export JSON</button>
+                        <button type="button" id="reset-content" class="rounded-2xl bg-red-500/10 border border-red-500/20 text-red-200 font-extrabold py-3 hover:bg-red-500/20"><i class="fa-solid fa-rotate-left mr-2"></i>Reset</button>
+                    </div>
+                    <div class="mt-4">
+                        <label class="label">Import Backup JSON</label>
+                        <input id="import-json" type="file" accept="application/json" class="field file:mr-4 file:rounded-xl file:border-0 file:bg-accent-orange file:px-4 file:py-2 file:text-white file:font-bold">
+                    </div>
+                    <div id="save-status" class="hidden mt-4 rounded-2xl border border-green-500/20 bg-green-500/10 text-green-200 p-4 text-sm font-semibold">Konten berhasil disimpan. Buka preview untuk melihat hasilnya.</div>
+                </section>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const STORAGE_KEY = 'bhineka_space_content_v1';
+        const LOGIN_KEY = 'bhineka_admin_logged_in_v1';
+        const DEFAULT_CONTENT = {
+            site: {
+                title: 'BHINEKA.SPACE - Harmoni Teknologi VR, Agama & Budaya Nusantara',
+                brandHtml: 'BHINEKA<span class="text-accent-orange">SPACE</span>',
+                tagline: 'Immersive Heritage Ecosystem',
+                footer: '&copy; 2026 Tim Bhineka Space. Seluruh Hak Cipta Dilindungi. Pelestarian Warisan melalui Realitas Imersif.'
+            },
+            hero: {
+                badge: 'Inovasi Metaverse Budaya & Spiritual Indonesia',
+                titleTop: 'Menembus Batas Realita',
+                titleMain: 'Bhineka Space',
+                description: 'Menghubungkan luhurnya nilai-nilai Keagamaan, indahnya khazanah Budaya Nusantara, dengan teknologi <span class="text-white font-semibold underline decoration-accent-orange decoration-2">Virtual Reality (VR)</span>. Merawat warisan sejarah leluhur dalam lanskap digital masa depan.',
+                primaryText: 'Pelajari Korelasi',
+                secondaryText: 'Eksplorasi VR'
+            },
+            korelasi: {
+                title: 'Korelasi Virtual Reality, Agama, & Budaya',
+                cards: [
+                    { number: '01', icon: 'fa-om', color: 'orange', title: 'Imersi Spiritual & Transendensi Keagamaan', description: 'Teknologi VR mampu merekonstruksi rumah ibadah, seperti Pura, Candi, Masjid, hingga kompleks religi dengan keakuratan tinggi. Hal ini dapat menjaga esensi kebersamaan dan kerukunan beragama (Bhinneka Tunggal Ika) secara interaktif.' },
+                    { number: '02', icon: 'fa-masks-theater', color: 'sky', title: 'Preservasi Keabadian Warisan Budaya', description: 'Budaya Nusantara kaya akan ekspresi tak berwujud seperti alat musik tradisional, pertunjukan wayang kulit, dan ritus tradisi. Lewat VR, artefak sejarah dan kebudayaan tidak sekadar disimpan pasif di dalam etalase museum, melainkan dihidupkan kembali sebagai medium edukasi 3 dimensi yang dinamis.' }
+                ]
+            },
+            portalHeader: { eyebrow: 'Gerbang Metaverse', title: 'Eksplorasi Portal Virtual Reality', subtitle: 'Nikmati petualangan imersif melintasi sejarah religi dan toleransi Nusantara.' },
+            portals: [
+                { tag: 'Budaya Nusantara', title: 'VR Candi Borobudur', description: 'Menyajikan visualisasi megah Candi Buddha terbesar di dunia langsung ke hadapan Anda. Nikmati tur virtual yang mengulas mendalam relief Karmawibhangga, stupa utama, hingga atmosfer keheningan fajar di puncak candi.', image: 'borobudur.png', link: 'https://darrellhaidar.github.io/borobudur/', button: 'Buka Portal VR Borobudur', color: 'orange' },
+                { tag: 'Harmoni 5 Agama', title: 'VR Puja Mandala Worship Complex', description: 'Menelusuri simbol toleransi beragama sejati di Kompleks Puja Mandala Bali secara 3D interaktif. Eksplorasi lima rumah ibadah dalam satu kawasan harmoni.', image: 'pujamandala.png', link: 'https://darrellhaidar.github.io/pujamandala/', button: 'Buka Portal VR Puja Mandala', color: 'sky' }
+            ],
+            beritaHeader: { eyebrow: 'Kabar Digital', title: 'Update Budaya & Teknologi', subtitle: 'Rangkuman kegiatan, edukasi, dan inovasi dari ekosistem Bhineka Space.' },
+            berita: [
+                { date: '2026', title: 'Pelestarian Budaya Berbasis VR', description: 'Bhineka Space menghadirkan pengalaman virtual untuk mengenalkan warisan Nusantara kepada generasi digital.', icon: 'fa-vr-cardboard' },
+                { date: 'Edukasi', title: 'Belajar Toleransi Lewat Ruang Imersif', description: 'Pengunjung dapat memahami keberagaman tempat ibadah dan nilai harmoni melalui visualisasi interaktif.', icon: 'fa-hands-holding-circle' },
+                { date: 'Digital', title: 'Konten Bisa Diubah dari Admin HTML', description: 'Semua teks, gambar, link portal, berita, dan anggota tim dapat diedit langsung dari admin panel.', icon: 'fa-pen-to-square' }
+            ],
+            team: {
+                title: 'Anggota Kami',
+                members: [
+                    { name: 'Amin Abdurrahman', image: 'amin.jpeg', instagram: 'https://www.instagram.com/amin.abdrhn/', border: 'orange' },
+                    { name: 'Jihan Aulia Zahrani', image: 'jihan.jpeg', instagram: 'https://www.instagram.com/jihannlia/', border: 'orange' },
+                    { name: 'Muhammad Zaki Ramadhani', image: 'muhammad.jpeg', instagram: 'https://www.instagram.com/muhammadzakiiramadhani/', border: 'sky' },
+                    { name: 'Chandika Windyra B.', image: 'chan.jpeg', instagram: 'https://www.instagram.com/chandikawb/', border: 'sky' },
+                    { name: 'Darrell Haidar Ahmad', image: 'darrell1.jpeg', instagram: 'https://www.instagram.com/darrellhaidarnew/', border: 'sky' }
+                ]
+            }
+        };
+
+        let content = getContent();
+
+        function deepMerge(base, extra) {
+            if (Array.isArray(base)) return Array.isArray(extra) ? extra : base;
+            if (typeof base !== 'object' || base === null) return extra ?? base;
+            const out = { ...base };
+            Object.keys(extra || {}).forEach((key) => out[key] = deepMerge(base[key], extra[key]));
+            return out;
+        }
+        function getContent() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+                return deepMerge(DEFAULT_CONTENT, saved || {});
+            } catch (e) {
+                return JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+            }
+        }
+        function saveContent() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
+        }
+        function getByPath(obj, path) {
+            return path.split('.').reduce((acc, part) => acc?.[part], obj);
+        }
+        function setByPath(obj, path, value) {
+            const parts = path.split('.');
+            const last = parts.pop();
+            const target = parts.reduce((acc, part) => acc[part] ??= {}, obj);
+            target[last] = value;
+        }
+        function htmlEscape(text) {
+            return String(text ?? '').replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+        }
+        function cardShell(title, body, removeAction = '') {
+            return `<div class="rounded-3xl bg-white/5 border border-white/10 p-4 sm:p-5">
+                <div class="flex items-center justify-between gap-4 mb-4"><h3 class="font-extrabold text-white">${title}</h3>${removeAction}</div>${body}
+            </div>`;
+        }
+        function input(path, label, type = 'text') {
+            return `<div><label class="label">${label}</label><input data-path="${path}" type="${type}" class="field" value="${htmlEscape(getByPath(content, path) || '')}"></div>`;
+        }
+        function textarea(path, label) {
+            return `<div><label class="label">${label}</label><textarea data-path="${path}" class="field">${htmlEscape(getByPath(content, path) || '')}</textarea></div>`;
+        }
+        function select(path, label, options) {
+            const value = getByPath(content, path);
+            return `<div><label class="label">${label}</label><select data-path="${path}" class="field">${options.map(opt => `<option value="${opt}" ${value === opt ? 'selected' : ''}>${opt}</option>`).join('')}</select></div>`;
+        }
+        function imagePicker(path, label) {
+            return `<div class="md:col-span-2"><label class="label">${label}</label><div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3"><input data-path="${path}" class="field" value="${htmlEscape(getByPath(content, path) || '')}" placeholder="contoh: borobudur.png atau URL gambar"><label class="cursor-pointer rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm font-bold text-gray-200 hover:bg-white/10 text-center"><i class="fa-solid fa-image mr-2"></i>Upload<input type="file" accept="image/*" class="hidden image-upload" data-image-path="${path}"></label></div><p class="text-xs text-gray-500 mt-2">Upload akan disimpan sebagai base64 di browser. Untuk project besar, lebih ringan pakai nama file gambar di folder yang sama.</p></div>`;
+        }
+
+        function renderEditors() {
+            document.querySelectorAll('[data-path]').forEach((field) => {
+                const value = getByPath(content, field.dataset.path);
+                if (field.tagName === 'TEXTAREA') field.value = value ?? '';
+                else field.value = value ?? '';
+            });
+
+            document.getElementById('korelasi-editor').innerHTML = content.korelasi.cards.map((_, i) => cardShell(
+                `Card Korelasi ${i + 1}`,
+                `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${input(`korelasi.cards.${i}.number`, 'Nomor')}
+                    ${input(`korelasi.cards.${i}.icon`, 'Icon FontAwesome')}
+                    ${select(`korelasi.cards.${i}.color`, 'Warna', ['orange', 'sky'])}
+                    ${input(`korelasi.cards.${i}.title`, 'Judul')}
+                    <div class="md:col-span-2">${textarea(`korelasi.cards.${i}.description`, 'Deskripsi')}</div>
+                </div>`
+            )).join('');
+
+            document.getElementById('portal-editor').innerHTML = content.portals.map((_, i) => cardShell(
+                `Portal ${i + 1}`,
+                `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${input(`portals.${i}.tag`, 'Tag')}
+                    ${input(`portals.${i}.title`, 'Judul')}
+                    ${input(`portals.${i}.link`, 'Link')}
+                    ${input(`portals.${i}.button`, 'Teks Tombol')}
+                    ${select(`portals.${i}.color`, 'Warna', ['orange', 'sky'])}
+                    ${imagePicker(`portals.${i}.image`, 'Gambar')}
+                    <div class="md:col-span-2">${textarea(`portals.${i}.description`, 'Deskripsi')}</div>
+                </div>`,
+                `<button type="button" class="remove-portal rounded-xl bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs font-bold text-red-200" data-index="${i}"><i class="fa-solid fa-trash mr-1"></i>Hapus</button>`
+            )).join('');
+
+            document.getElementById('berita-editor').innerHTML = content.berita.map((_, i) => cardShell(
+                `Berita ${i + 1}`,
+                `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${input(`berita.${i}.date`, 'Label/Tanggal')}
+                    ${input(`berita.${i}.icon`, 'Icon FontAwesome')}
+                    ${input(`berita.${i}.title`, 'Judul')}
+                    <div class="md:col-span-2">${textarea(`berita.${i}.description`, 'Deskripsi')}</div>
+                </div>`,
+                `<button type="button" class="remove-berita rounded-xl bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs font-bold text-red-200" data-index="${i}"><i class="fa-solid fa-trash mr-1"></i>Hapus</button>`
+            )).join('');
+
+            document.getElementById('team-editor').innerHTML = content.team.members.map((_, i) => cardShell(
+                `Anggota ${i + 1}`,
+                `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${input(`team.members.${i}.name`, 'Nama')}
+                    ${input(`team.members.${i}.instagram`, 'Instagram')}
+                    ${select(`team.members.${i}.border`, 'Warna Border Foto', ['orange', 'sky'])}
+                    ${imagePicker(`team.members.${i}.image`, 'Foto')}
+                </div>`,
+                `<button type="button" class="remove-member rounded-xl bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs font-bold text-red-200" data-index="${i}"><i class="fa-solid fa-trash mr-1"></i>Hapus</button>`
+            )).join('');
+        }
+
+        function collectFields() {
+            document.querySelectorAll('[data-path]').forEach((field) => setByPath(content, field.dataset.path, field.value));
+        }
+        function bootApp() {
+            const loggedIn = localStorage.getItem(LOGIN_KEY) === 'yes';
+            document.getElementById('login-screen').classList.toggle('hidden', loggedIn);
+            document.getElementById('admin-app').classList.toggle('hidden', !loggedIn);
+            if (loggedIn) renderEditors();
+        }
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            if (username === 'admin' && password === 'admin123') {
+                localStorage.setItem(LOGIN_KEY, 'yes');
+                document.getElementById('login-error').classList.add('hidden');
+                bootApp();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        });
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem(LOGIN_KEY);
+            bootApp();
+        });
+        document.getElementById('content-form').addEventListener('input', (e) => {
+            if (e.target.matches('[data-path]')) setByPath(content, e.target.dataset.path, e.target.value);
+        });
+        document.getElementById('content-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            collectFields();
+            saveContent();
+            const status = document.getElementById('save-status');
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 2800);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#add-portal')) {
+                collectFields();
+                content.portals.push({ tag: 'Tag Baru', title: 'Portal Baru', description: 'Deskripsi portal baru.', image: 'gambar.png', link: '#', button: 'Buka Portal', color: 'orange' });
+                renderEditors();
+            }
+            if (e.target.closest('#add-berita')) {
+                collectFields();
+                content.berita.push({ date: 'Update', title: 'Berita Baru', description: 'Tulis deskripsi berita di sini.', icon: 'fa-newspaper' });
+                renderEditors();
+            }
+            if (e.target.closest('#add-member')) {
+                collectFields();
+                content.team.members.push({ name: 'Anggota Baru', image: 'foto.png', instagram: '#', border: 'orange' });
+                renderEditors();
+            }
+            const removePortal = e.target.closest('.remove-portal');
+            if (removePortal) {
+                collectFields();
+                content.portals.splice(Number(removePortal.dataset.index), 1);
+                renderEditors();
+            }
+            const removeBerita = e.target.closest('.remove-berita');
+            if (removeBerita) {
+                collectFields();
+                content.berita.splice(Number(removeBerita.dataset.index), 1);
+                renderEditors();
+            }
+            const removeMember = e.target.closest('.remove-member');
+            if (removeMember) {
+                collectFields();
+                content.team.members.splice(Number(removeMember.dataset.index), 1);
+                renderEditors();
+            }
+        });
+
+        document.addEventListener('change', (e) => {
+            if (!e.target.matches('.image-upload')) return;
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                const path = e.target.dataset.imagePath;
+                setByPath(content, path, reader.result);
+                renderEditors();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('export-json').addEventListener('click', () => {
+            collectFields();
+            const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bhineka-space-content.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+        document.getElementById('import-json').addEventListener('change', (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    content = deepMerge(DEFAULT_CONTENT, JSON.parse(reader.result));
+                    saveContent();
+                    renderEditors();
+                    alert('Import berhasil. Konten sudah disimpan.');
+                } catch (err) {
+                    alert('File JSON tidak valid.');
+                }
+            };
+            reader.readAsText(file);
+        });
+        document.getElementById('reset-content').addEventListener('click', () => {
+            if (!confirm('Reset semua konten ke default?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            content = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+            renderEditors();
+            alert('Konten dikembalikan ke default. Klik Simpan Semua bila ingin menyimpan reset.');
+        });
+
+        bootApp();
+    </script>
+</body>
+</html>
